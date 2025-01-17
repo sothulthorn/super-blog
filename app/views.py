@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from django.db.models import Count
 
-from app.models import Post, Comments, Tag, Profile
+from app.models import Post, Comments, Tag, Profile, WebsiteMeta
 from app.forms import CommentForm, SubscribeForm
 
 # Create your views here.
@@ -23,11 +23,15 @@ def index(request):
       subscribe_form.save()
       subscribe_successful = 'Subscribed Successfully'
       subscribe_form = SubscribeForm()
+  
+  website_info = None
+  if WebsiteMeta.objects.all().exists():
+    website_info = WebsiteMeta.objects.all()[0]
       
   if featured_blog:
     featured_blog = featured_blog[0]
   
-  context = {'posts' : posts, 'top_posts': top_posts, 'recent_posts': recent_posts, 'subscribe_form': subscribe_form, 'subscribe_successful': subscribe_successful, 'featured_blog': featured_blog}
+  context = {'posts' : posts, 'top_posts': top_posts, 'recent_posts': recent_posts, 'subscribe_form': subscribe_form, 'subscribe_successful': subscribe_successful, 'featured_blog': featured_blog, 'website_info': website_info}
   return render(request, 'app/index.html', context)
 
 def post_page(request, slug):
